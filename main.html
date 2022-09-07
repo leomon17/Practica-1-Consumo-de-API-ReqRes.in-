@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">    
 </head>
 <body>
     <div class="container">
@@ -13,7 +13,7 @@
             <h1>
                 Practica 1 Consumo de API ReqRes.in 
             </h1>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: 10%;"> Agregar</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="width: auto;"> Agregar</button>
         </div>
         <div id="main" class="row">
             
@@ -24,51 +24,97 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
-            <form action="post">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Registrar nueva persona</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Nombre</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Leo">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Apellido</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="apellido" placeholder="Desarrollador">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="email">
                     </div>
-                                                        
+                                  
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Fotografia</label>
+                        <input type="url" class="form-control" id="foto" placeholder="foto">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" class="btn btn-primary" onclick="guardar()">Guardar</button>
                 </div>
-            </form>
         </div>
         </div>
     </div>
   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.31/dist/sweetalert2.all.min.js"></script>    
     <script>
 
-    fetch('https://reqres.in/api/users?page=1')
-    .then(response => response.json())
-    .then(data => {
-        var main = document.getElementById("main");
-        console.log(data.data)
-        data.data.forEach(e => {
-            console.log(e);
+    window.onload = function(){
+        fetch('https://reqres.in/api/users?page=1')
+        .then(response => response.json())
+        .then(data => {
+            var main = document.getElementById("main");
+            data.data.forEach(e => {
+                var card = '<div class="card m-2" style="width: 18rem;">'+
+                '<img src="'+e.avatar+'" class="card-img-top" alt="...">'+
+                '<div class="card-body"><p class="card-text">'+e.first_name + e.last_name+'</p> <p class="card-text">'+e.email+'</p></div></div>';
+                main.innerHTML += card;
+            });      
+        });
+    }
+
+    const myModal = document.getElementById('exampleModal');
+    const modal = new bootstrap.Modal(myModal);
+
+    async function guardar(){
+        try {
+            
+            var main = document.getElementById("main");
+            let usuario = {
+                name: "CCC",
+                job: "CCC",
+                first_name: document.getElementById('nombre').value,
+                last_name: document.getElementById('apellido').value,
+                email: document.getElementById('email').value,
+                avatar: document.getElementById('foto').value,
+            }
+            const request = await fetch("https://reqres.in/api/users", {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(usuario)
+            })
+            const r = await request.json()
+            console.log(r);
+            modal.hide();
+            Swal.fire({
+                title: 'Registro completado',
+                text: 'Se ha completado un registro',
+                icon: 'success',
+                confirmButtonText: 'Cool'
+            })
+
             var card = '<div class="card m-2" style="width: 18rem;">'+
-            '<img src="'+e.avatar+'" class="card-img-top" alt="...">'+
-            '<div class="card-body"><p class="card-text">'+e.first_name + e.last_name+'</p> <p class="card-text">'+e.email+'</p></div></div>';
+            '<img src="'+r.avatar+'" class="card-img-top" alt="...">'+
+            '<div class="card-body"><p class="card-text">'+r.first_name + r.last_name+'</p> <p class="card-text">'+r.email+'</p></div></div>';
             main.innerHTML += card;
-        });      
-    });
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     </script>
 </body>
