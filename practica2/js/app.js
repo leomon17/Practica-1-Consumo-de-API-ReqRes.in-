@@ -6,5 +6,3 @@ if (navigator.serviceWorker) {
 }else{
     console.log("no soporta");
 }
-//github.io/nombreRepo
-//github.io/sw.js
